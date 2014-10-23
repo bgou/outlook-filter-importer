@@ -47,7 +47,7 @@
             // 
             this.tab1.ControlId.ControlIdType = Microsoft.Office.Tools.Ribbon.RibbonControlIdType.Office;
             this.tab1.Groups.Add(this.group1);
-            this.tab1.Label = "Rules Importer";
+            this.tab1.Label = "Gmail Filters";
             this.tab1.Name = "tab1";
             // 
             // group1
@@ -82,15 +82,15 @@
             // debug
             // 
             this.debug.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.debug.Label = "DEBUG";
+            this.debug.Label = "Remove All Rules";
             this.debug.Name = "debug";
-            this.debug.OfficeImageId = "Chart3DColumnChart";
+            this.debug.OfficeImageId = "QueryDelete";
             this.debug.ShowImage = true;
             this.debug.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Debug_Click);
             // 
-            // TestRibbon
+            // ImportRibbon
             // 
-            this.Name = "TestRibbon";
+            this.Name = "ImportRibbon";
             this.RibbonType = "Microsoft.Outlook.Explorer";
             this.Tabs.Add(this.tab1);
             this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.ImportRibbon_Load);
