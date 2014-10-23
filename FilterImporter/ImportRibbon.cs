@@ -253,6 +253,7 @@ namespace OutlookAddIn1
         private string[] CleanForSubjectOrBody(string value)
         {
             value = value.Trim();
+            value = Regex.Replace(value, "^\"(.*)\"$", "$1");
             string[] words = value.Split(new string[] { " OR " }, StringSplitOptions.RemoveEmptyEntries);
             return words;
         }
