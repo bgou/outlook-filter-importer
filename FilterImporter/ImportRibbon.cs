@@ -92,6 +92,7 @@ namespace OutlookAddIn1
                 if (dialogResult == DialogResult.Yes)
                 {
                     StartBackground(DeleteAllRules);
+                    //StartBackground(RenameAllRules);
                 }
             }
         }
@@ -114,7 +115,8 @@ namespace OutlookAddIn1
 
                     foreach (feedEntry entry in fe.entry)
                     {
-                        Rule rule = rules.Create(entry.id, OlRuleType.olRuleReceive);
+                        string ruleName = Regex.Replace(entry.id, ".*(filter:.*)", "$1");
+                        Rule rule = rules.Create(ruleName, OlRuleType.olRuleReceive);
                         rule.Enabled = true;
                         string destinationFolder = string.Empty;
                         bool skipInbox = false;
@@ -212,6 +214,12 @@ namespace OutlookAddIn1
                             }
                         }
 
+                        if (rule.Conditions.Subject.Enabled && rule.Conditions.BodyOrSubject.Enabled)
+                        {
+                            Debug.WriteLine("Disable BodyOrSubject because condition Subject already exists.");
+                            rule.Conditions.BodyOrSubject.Enabled = false;
+                        }
+
                         var customFolder = getOrCreateMailFolder(destinationFolder);
 
                         if (skipInbox)
@@ -256,6 +264,29 @@ namespace OutlookAddIn1
             value = Regex.Replace(value, "^\"(.*)\"$", "$1");
             string[] words = value.Split(new string[] { " OR " }, StringSplitOptions.RemoveEmptyEntries);
             return words;
+        }
+
+        private void RenameAllRules()
+        {
+            int count = 0;
+
+            Rules rules = GetExchangeRules();
+            if (rules != null)
+            {
+                for (int i = 1; i <= rules.Count; i++)
+                {
+                    Rule rule = rules[i];
+                    string oldName = rule.Name;
+                    rule.Name = Regex.Replace(rule.Name, ".*(filter:.*)", "$1");
+
+                    Debug.WriteLine(string.Format("Renaming rule {2} from {0} to {1}", oldName, rule.Name, count));
+                    count++;
+                }
+                Debug.WriteLine("Saving rule changes to server");
+                rules.Save();
+                Debug.WriteLine("Changes uploaded to server");
+                MessageBox.Show(string.Format("{0} rules have been renamed.", count), "Success");
+            }
         }
 
         private void DeleteAllRules()
